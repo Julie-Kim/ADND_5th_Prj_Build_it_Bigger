@@ -1,7 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Intent;
-import android.example.com.javajokes.Joker;
 import android.example.com.jokedisplay.JokeActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,11 +45,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayJoke(View view) {
-        String joke = new Joker().getJoke();
+        String joke = getJokeFromEndpointsTask();
         Log.d(TAG, "displayJoke() joke: " + joke);
 
         Intent intent = new Intent(this, JokeActivity.class);
         intent.putExtra(JokeActivity.JOKE_KEY, joke);
         startActivity(intent);
+    }
+
+    private String getJokeFromEndpointsTask() {
+        String joke = "";
+
+        try {
+            joke = new EndpointsAsyncTask().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return joke;
     }
 }
