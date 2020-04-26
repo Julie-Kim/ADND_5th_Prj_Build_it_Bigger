@@ -3,7 +3,9 @@
     package="android.example.com.jokedisplay">
 
     <application>
-        <activity android:name=".JokeActivity"></activity>
+        <activity
+            android:name=".JokeActivity"
+            android:theme="@style/Theme.AppCompat" />
     </application>
 
 </manifest>
