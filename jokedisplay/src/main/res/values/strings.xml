@@ -1,0 +1,4 @@
+<resources>
+    <string name="joke">Joke</string>
+    <string name="no_joke">Sorry, there is no joke.</string>
+</resources>
