@@ -19,7 +19,7 @@ public class JokeActivityTest {
     public ActivityTestRule<JokeActivity> mActivityTestRule = new ActivityTestRule<>(JokeActivity.class);
 
     @Test
-    public void testMainActivity_ClickRecipeList() {
+    public void testMainActivity_ClickJokeButton() {
 
         String noJokeMessage = mActivityTestRule.getActivity().getString(R.string.no_joke);
 

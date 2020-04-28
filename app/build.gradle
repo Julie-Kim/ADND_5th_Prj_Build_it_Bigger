@@ -67,6 +67,10 @@ android {
             res.srcDirs = ['src/paid/res']
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

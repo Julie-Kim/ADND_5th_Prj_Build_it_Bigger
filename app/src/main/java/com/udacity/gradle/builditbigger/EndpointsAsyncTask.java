@@ -11,7 +11,11 @@ import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import java.io.IOException;
 
 public class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
+
     private static MyApi myApiService = null;
+
+    private EndpointsAsyncTaskListener mListener = null;
+    private Exception mError = null;
 
     @Override
     protected String doInBackground(Void... params) {
@@ -36,7 +40,32 @@ public class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
         try {
             return myApiService.getJoke().execute().getData();
         } catch (IOException e) {
+            mError = e;
             return e.getMessage();
         }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (mListener != null) {
+            mListener.onComplete(result, mError);
+        }
+    }
+
+    @Override
+    protected void onCancelled() {
+        if (mListener != null) {
+            mError = new InterruptedException("AsyncTask cancelled.");
+            mListener.onComplete(null, mError);
+        }
+    }
+
+    public interface EndpointsAsyncTaskListener {
+        void onComplete(String result, Exception e);
+    }
+
+    public EndpointsAsyncTask setListener(EndpointsAsyncTaskListener listener) {
+        this.mListener = listener;
+        return this;
     }
 }
