@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.concurrent.ExecutionException;
+import java.lang.ref.WeakReference;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,8 +44,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void displayJoke(View view) {
-        String joke = getJokeFromEndpointsTask();
+    public void onClickJokeButton(View view) {
+        new FetchJokeTask(this).execute();
+    }
+
+    public void displayJoke(String joke) {
         Log.d(TAG, "displayJoke() joke: " + joke);
 
         Intent intent = new Intent(this, JokeActivity.class);
@@ -53,17 +56,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private String getJokeFromEndpointsTask() {
-        String joke = "";
+    private static class FetchJokeTask extends EndpointsAsyncTask {
 
-        try {
-            joke = new EndpointsAsyncTask().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        private WeakReference<MainActivity> mActivityReference;
+
+        FetchJokeTask(MainActivity activity) {
+            mActivityReference = new WeakReference<>(activity);
         }
 
-        return joke;
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            mActivityReference.get().displayJoke(result);
+        }
     }
 }
